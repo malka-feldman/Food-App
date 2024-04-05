@@ -3,6 +3,7 @@ import Header from './components/Layout/Header';
 import Meals from './components/Meals/Meals';
 import Cart from './components/Cart/Cart';
 import CartProvider from './store/CartProvider';
+import CheckingAPI from './components/CheckingAPI';
 
 function App() {
   const [cartIsShown, setCartIsShown] = useState(false);
@@ -21,6 +22,7 @@ function App() {
       <Header onShowCart={showCartHandler}/>
       <main>
         <Meals/>
+        <CheckingAPI/>
       </main>
     </CartProvider>
   );

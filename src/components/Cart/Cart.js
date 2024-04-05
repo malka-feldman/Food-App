@@ -1,18 +1,35 @@
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import Modal from '../UI/Modal';
 import CartItem from './CartItem';
 import classes from './Cart.module.css';
 import CartContext from '../../store/cart-context';
 
 const Cart = props => {
+    
+    const [backendData, setBackendData] = useState([{}])
+
+    useEffect(() => {
+        fetch("/api").then(
+        response => response.json()
+        ).then(
+        data => {
+            setBackendData(data)
+        }
+        )
+    }, [])
+
     const cartCtx = useContext(CartContext);
 
-    const totalAmount = `$${cartCtx.totalAmount}`;
+    const totalAmount = `$${cartCtx.totalAmount.toFixed(2)}`;
 
     const hasItems = cartCtx.items.length>0;
 
-    const cartItemRemoveHandler = id => {};
-    const cartItemAddHandler = id => {};
+    const cartItemRemoveHandler = id => {
+        cartCtx.removeItem(id);
+    };
+    const cartItemAddHandler = item => {
+        cartCtx.addItem({ ...item, amount: 1});
+    };
     const cartItems = 
         <ul className={classes['cart-items']}>
             {cartCtx.items.map((item) => (
@@ -20,8 +37,8 @@ const Cart = props => {
                 name={item.name} 
                 amount={item.amount} 
                 price={item.price}
-                onRemove={cartItemRemoveHandler}
-                onAdd={cartItemAddHandler}
+                onRemove={cartItemRemoveHandler.bind(null, item.id)}
+                onAdd={cartItemAddHandler.bind(null, item)}
                 />
             ))}
         </ul>

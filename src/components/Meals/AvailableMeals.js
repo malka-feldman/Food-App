@@ -1,44 +1,38 @@
+import React, { useState, useEffect } from 'react';
 import Card from '../UI/Card';
 import classes from './AvailableMeals.module.css';
 import MealItem from './MealItem/MealItem';
-const DUMMY_MEALS = [
-    {
-        id: 'm1',
-        name: 'shchwarma',
-        price: 32.99,
-    },
-    {
-        id: 'm2',
-        name: 'Shnitzel',
-        price: 26.99,
-    },
-    {
-        id: 'm3',
-        name: 'Lasagna',
-        price: 18.99,
-    },
-    {
-        id: 'm4',
-        name: 'Taco Night',
-        price: 28.99,
-    }
-]
-const AvailableMeals = () => {
-    const mealsList = DUMMY_MEALS.map(meal => 
-        <MealItem 
-            key={meal.id} 
-            id = {meal.id}
-            name={meal.name} 
-            price={meal.price}
 
-        />
-        );
+const AvailableMeals = () => {
+    const [backendData, setBackendData] = useState([]);
+
+    useEffect(() => {
+        fetch("/users")
+            .then(response => response.json())
+            .then(data => {
+                setBackendData(data); // Set backendData to the array received from the server
+            })
+            .catch(error => {
+                console.error("Error fetching user data:", error);
+            });
+    }, []);
+
+        const mealsList = backendData.map(user => (
+            <MealItem 
+                key={user.id} 
+                id={user.id}
+                name={user.name} 
+                price={user.price}
+            />
+        ));
     
-    return (<section className={classes.meals}>
-       <Card>
-        <ul>{mealsList}</ul>
-        </Card>
-    </section>
+    
+    return (
+        <section className={classes.meals}>
+            <Card>
+                <ul>{mealsList}</ul>
+            </Card>
+        </section>
     );
 }
 
